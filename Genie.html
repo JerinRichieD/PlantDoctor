@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <title>🍅 TomatoGenie - Ask about Tomato Plant Diseases</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #e8f5e9; }
+    #chatbox { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    .message { margin-bottom: 15px; }
+    .user { color: #2e7d32; font-weight: bold; }
+    .bot { color: #c62828; }
+    input, button { padding: 10px; font-size: 16px; width: 100%; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>🍅 Ask TomatoGenie</h2>
+    <div id="chat"></div>
+    <input id="prompt" type="text" placeholder="Ask a question about tomato plant diseases..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const prompt = document.getElementById('prompt').value;
+      if (!prompt.trim()) return;
+
+      const chat = document.getElementById('chat');
+      chat.innerHTML += `<div class="message user">You: ${prompt}</div>`;
+
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      });
+
+      const data = await res.json();
+
+      chat.innerHTML += `<div class="message bot">Genie: ${data.reply}</div>`;
+      document.getElementById('prompt').value = '';
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
